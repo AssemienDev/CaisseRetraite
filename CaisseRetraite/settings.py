@@ -40,6 +40,11 @@ INSTALLED_APPS = [
     'gestion.apps.GestionConfig',
 ]
 
+LOGIN_URL = '/connexion/'
+LOGOUT_URL = '/deconnexion/'
+LOGIN_REDIRECT_URL = '/'   # ou la page d'accueil ou tableau de bord
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

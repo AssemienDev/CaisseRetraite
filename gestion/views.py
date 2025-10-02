@@ -1,18 +1,22 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Adherent
 from .forms import AdherentForm
 
 # Vue pour lister tous les adhérents
+@login_required
 def adherent_list(request):
     adherents = Adherent.objects.all()
     return render(request, 'gestion/liste_adherents.html', {'adherents': adherents})
 
 # Vue pour afficher le détail d'un adhérent
+@login_required
 def adherent_detail(request, pk):
     adherent = get_object_or_404(Adherent, pk=pk)
     return render(request, 'gestion/detail_adherent.html', {'adherent': adherent})
 
 # Vue pour créer un nouvel adhérent
+@login_required
 def adherent_create(request):
     if request.method == 'POST':
         form = AdherentForm(request.POST)
@@ -24,6 +28,7 @@ def adherent_create(request):
     return render(request, 'gestion/adherent_form.html', {'form': form})
 
 # Vue pour modifier un adhérent existant
+@login_required
 def adherent_update(request, pk):
     adherent = get_object_or_404(Adherent, pk=pk)
     if request.method == 'POST':
