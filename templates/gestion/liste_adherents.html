@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Liste des Adhérents{% endblock %}
+
+{% block content %}
+    <a href="{% url 'gestion:adherent_create' %}" style="margin-bottom: 20px; display: inline-block;">Ajouter un nouvel adhérent</a>
+    
+    <ul>
+        {% for adherent in adherents %}
+            <li>
+                <a href="{% url 'gestion:adherent_detail' pk=adherent.pk %}">
+                    {{ adherent.prenom }} {{ adherent.nom }}
+                </a>
+            </li>
+        {% empty %}
+            <li>Aucun adhérent trouvé.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
