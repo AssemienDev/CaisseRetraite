@@ -43,8 +43,13 @@ jobs:
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
 
             # Reconstruire et relancer les conteneurs
-            docker compose down
-            docker compose up -d --build
+            docker-compose down
 
-            # Nettoyer les images inutilisées
+            # Reconstruire l'image SANS UTILISER LE CACHE
+            docker-compose build --no-cache
+
+            # Démarrer le nouveau conteneur en arrière-plan
+            docker-compose up -d
+
+            # Nettoyer les anciennes images Docker non utilisées
             docker image prune -af
