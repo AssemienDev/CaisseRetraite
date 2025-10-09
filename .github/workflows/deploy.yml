@@ -22,7 +22,7 @@ jobs:
           script: |
             # Naviguer vers le répertoire du projet (ou le cloner si c'est la première fois)
             if [ ! -d "caisse_retraite_project" ]; then
-              git clone https://github.com/VOTRE_NOM_UTILISATEUR/VOTRE_REPO.git caisse_retraite_project
+              git clone https://github.com/AssemienDev/caisse_retrait_deploy.git caisse_retraite_project
             fi
             cd caisse_retraite_project
             git pull
