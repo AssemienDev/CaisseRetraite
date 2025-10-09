@@ -13,6 +13,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copier le reste du code
 COPY . .
 
+# Créer le dossier staticfiles avec les bons droits
+RUN mkdir -p /app/staticfiles \
+    && chmod 777 /app/staticfiles
+
 # Donner les permissions d'exécution au script
 RUN chmod +x /app/entrypoint.sh
 
@@ -22,7 +26,6 @@ USER nonroot
 
 # Exposer le port de l’application
 EXPOSE 8004
-
 
 # Lancer le script d'entrée
 ENTRYPOINT ["/app/entrypoint.sh"]
