@@ -34,7 +34,7 @@ jobs:
             ssh-keyscan -H github.com >> ~/.ssh/known_hosts
         
             if [ ! -d "caisse_retrait_deploy" ]; then
-              git clone git@github.com:AssemienDev/caisse_retrait_deploy.git
+              GIT_SSH_COMMAND="ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes" git clone git@github.com:AssemienDev/caisse_retrait_deploy.git
             fi
             cd caisse_retrait_deploy
             git pull origin main
