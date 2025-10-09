@@ -32,7 +32,7 @@ jobs:
 
             # Cloner le projet si nécessaire
             if [ ! -d "caisse_retraite_project" ]; then
-              git clone git@github.com:AssemienDev/caisse_retrait_deploy.git caisse_retraite_project
+              git clone git@github.com:AssemienDev/caisse_retrait_deploy.git caisse_retrait_deploy
             fi
 
             cd caisse_retraite_project
