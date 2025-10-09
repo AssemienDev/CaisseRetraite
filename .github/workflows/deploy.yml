@@ -33,23 +33,24 @@ jobs:
             mkdir -p ~/.ssh
             ssh-keyscan -H github.com >> ~/.ssh/known_hosts
         
+            # Nouvelle version
             if [ ! -d "caisse_retrait_deploy" ]; then
-              GIT_SSH_COMMAND="ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes" git clone git@github.com:AssemienDev/caisse_retrait_deploy.git
+              # Cloner en utilisant HTTPS
+              git clone https://github.com/AssemienDev/caisse_retrait_deploy.git
             fi
             cd caisse_retrait_deploy
-            git pull origin main
+            # git pull nécessite une authentification, donc on fait un reset pour être sûr d'avoir la bonne version
+            git fetch
+            git reset --hard origin/main
 
             # Créer le fichier .env proprement
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
 
             # Reconstruire et relancer les conteneurs
-            docker-compose down
-
-            # Reconstruire l'image SANS UTILISER LE CACHE
-            docker-compose build --no-cache
-
-            # Démarrer le nouveau conteneur en arrière-plan
-            docker-compose up -d
+            # Nouvelles lignes
+            docker compose down
+            docker compose build --no-cache
+            docker compose up -d
 
             # Nettoyer les anciennes images Docker non utilisées
             docker image prune -af
