@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Rapports Financiers{% endblock %}
+{% block page_title %}Rapports Financiers Mensuels{% endblock %}
+
+{% block content %}
+    <p>Vous trouverez ici les rapports financiers consolidés de chaque mois.</p>
+    
+    <ul>
+        {% for rapport in rapports %}
+            <li>
+                <strong>{{ rapport.date|date:"F Y" }}</strong> - 
+                {% if rapport.fichier_rapport %}
+                    <a href="{{ rapport.fichier_rapport.url }}" download>Télécharger le rapport</a>
+                {% else %}
+                    <span>(Génération en cours)</span>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>Aucun rapport n'est disponible pour le moment.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

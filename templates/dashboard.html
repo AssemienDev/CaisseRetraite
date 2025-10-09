@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Tableau de Bord{% endblock %}
+
+{% block page_title %}Bienvenue sur votre Tableau de Bord{% endblock %}
+
+{% block content %}
+    <h3>Résumé de votre situation</h3>
+    <ul>
+        <li><strong>Solde de votre épargne :</strong> {{ adherent.compte_epargne.solde_total|default:"N/A" }} €</li>
+        <li><strong>Statut de votre dernière demande de retraite :</strong> {{ derniere_demande.get_statut_display|default:"Aucune demande" }}</li>
+    </ul>
+
+    <h3>Actions rapides</h3>
+    <p>
+        <a href="{% url 'retraites:creer_demande' %}">Faire une nouvelle demande de retraite</a>
+    </p>
+    <p>
+        <a href="{% url 'epargne:mon_epargne' %}">Consulter le détail de mon épargne</a>
+    </p>
+{% endblock %}

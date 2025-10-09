@@ -1,34 +1,48 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-g">
-    <title>Caisse de Retraite</title>
+    <meta charset="UTF-8">
+    <title>Caisse de Retraite - {% block title %}{% endblock %}</title>
     <style>
-        body { font-family: sans-serif; margin: 2em; }
-        nav { background: #f4f4f4; padding: 1em; margin-bottom: 1em; }
-        nav a { margin-right: 15px; }
-        .container { max-width: 960px; margin: auto; }
-        .user-info { float: right; }
+        /* Styles de base pour la clarté */
+        body { font-family: sans-serif; margin: 0; background-color: #f4f4f9; }
+        .container { max-width: 1100px; margin: 20px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        nav { background: #333; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; color: white; }
+        nav a { color: white; text-decoration: none; margin: 0 10px; }
+        nav .user-info { color: #ddd; }
+        .admin-nav { background-color: #d9534f; border-radius: 5px; padding: 5px 10px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <nav>
-            <a href="{% url 'gestion:adherent_list' %}">Accueil - Liste des Adhérents</a>
-            <!-- Zone pour l'authentification (TP5) -->
-            <div class="user-info">
-                {% if user.is_authenticated %}
-                    Bonjour, {{ user.username }} | <a href="{% url 'logout' %}">Déconnexion</a>
-                {% else %}
-                    <a href="{% url 'login' %}">Connexion</a>
+    <nav>
+        <div>
+            <a href="{% url 'dashboard' %}"><strong>Tableau de Bord</strong></a>
+            <a href="{% url 'epargne:mon_epargne' %}">Mon Épargne</a>
+            <a href="{% url 'retraites:mes_demandes' %}">Mes Demandes de Retraite</a>
+            <a href="{% url 'rapports:liste_rapports' %}">Rapports</a>
+        </div>
+        <div class="user-info">
+            {% if user.is_authenticated %}
+                Bonjour, {{ user.username }}
+                {% if user.is_staff %}
+                    | <a href="{% url 'audit:log_list' %}" class="admin-nav">Audit Log</a>
+                    | <a href="/admin/" target="_blank">Admin Django</a>
                 {% endif %}
-            </div>
-        </nav>
+                | <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="background:none; border:none; padding:0; color:white; text-decoration:underline; cursor:pointer;">
+                        Déconnexion
+                    </button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">Connexion</a>
+            {% endif %}
+        </div>
+    </nav>
 
-        <h1>{% block title %}Portail de Gestion{% endblock %}</h1>
-
-        {% block content %}
-        {% endblock %}
+    <div class="container">
+        <h1>{% block page_title %}{% endblock %}</h1>
+        {% block content %}{% endblock %}
     </div>
 </body>
 </html>

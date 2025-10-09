@@ -1,26 +1,29 @@
-"""
-URL configuration for CaisseRetraite project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
+from gestion import views as gestion_views # Importer les vues de l'app gestion
+from django.conf import settings
+from django.conf.urls.static import static
+
+from gestion.views import logoutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('gestion.urls')),
+
+    # URL du tableau de bord
+    path('', gestion_views.dashboard, name='dashboard'),
+
+    # Inclure les URLs de chaque application
+    path('retraites/', include('retraites.urls')),
+    path('epargne/', include('epargne.urls')),
+    path('rapports/', include('rapports.urls')),
+    path('audit/', include('audit.urls')),
+
+    # URLs d'authentification
     path('connexion/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
-    path('deconnexion/', auth_views.LogoutView.as_view(), name='logout'),
+    path('deconnexion/', logoutView, name='logout'),
 ]
+
+# Uniquement en mode DEBUG, pour servir les fichiers uploadés (comme les rapports)
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

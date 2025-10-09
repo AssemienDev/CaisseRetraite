@@ -1,0 +1,38 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main # Se déclenche sur un push vers la branche main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          script: |
+            # Naviguer vers le répertoire du projet (ou le cloner si c'est la première fois)
+            if [ ! -d "caisse_retraite_project" ]; then
+              git clone https://github.com/VOTRE_NOM_UTILISATEUR/VOTRE_REPO.git caisse_retraite_project
+            fi
+            cd caisse_retraite_project
+            git pull
+
+            # Créer le fichier .env à partir des secrets GitHub
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+
+            # Reconstruire et démarrer les conteneurs avec Docker Compose
+            docker-compose build
+            docker-compose up -d
+
+            # Nettoyer les anciennes images Docker non utilisées
+            docker image prune -af

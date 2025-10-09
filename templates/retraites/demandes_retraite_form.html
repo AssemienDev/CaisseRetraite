@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Nouvelle Demande de Retraite{% endblock %}
+{% block page_title %}Soumettre une nouvelle demande de retraite{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Envoyer ma demande</button>
+    </form>
+{% endblock %}

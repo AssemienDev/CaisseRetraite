@@ -1,7 +1,30 @@
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Adherent
 from .forms import AdherentForm
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from retraites.models import DemandeRetraite # On importe le modèle d'une autre app
+
+
+@login_required
+def dashboard(request):
+    try:
+        # Récupère l'adhérent lié à l'utilisateur actuellement connecté
+        adherent = request.user.adherent
+        derniere_demande = DemandeRetraite.objects.filter(profil=adherent).first()
+    except Adherent.DoesNotExist:
+        # Gère le cas où l'utilisateur n'est pas un adhérent (ex: admin pur)
+        adherent = None
+        derniere_demande = None
+
+    context = {
+        'adherent': adherent,
+        'derniere_demande': derniere_demande,
+    }
+    return render(request, 'dashboard.html', context)
+
 
 # Vue pour lister tous les adhérents
 @login_required
@@ -39,3 +62,8 @@ def adherent_update(request, pk):
     else:
         form = AdherentForm(instance=adherent)
     return render(request, 'gestion/adherent_form.html', {'form': form})
+
+
+def logoutView(request):
+    logout(request)
+    return redirect('gestion:login')

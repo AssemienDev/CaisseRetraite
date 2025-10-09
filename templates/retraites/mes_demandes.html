@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Mes Demandes de Retraite{% endblock %}
+{% block page_title %}Historique de vos Demandes de Retraite{% endblock %}
+
+{% block content %}
+    <a href="{% url 'retraites:creer_demande' %}">Faire une nouvelle demande</a>
+    <hr>
+    
+    {% if demandes %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Date de la demande</th>
+                    <th>Montant demandé</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for demande in demandes %}
+                    <tr>
+                        <td>{{ demande.date_demande }}</td>
+                        <td>{{ demande.montant_retraite }} €</td>
+                        <td>{{ demande.get_statut_display }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Vous n'avez encore fait aucune demande de retraite.</p>
+    {% endif %}
+{% endblock %}

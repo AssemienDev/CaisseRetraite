@@ -1,0 +1,20 @@
+services:
+  caisse_retraite_app:
+    build: .
+    container_name: caisse_retraite_app
+    restart: always
+    env_file:
+      - .env
+    ports:
+      # Expose le port 8004 du conteneur sur le port 8004 de l'hôte
+      - "8004:8004"
+    volumes:
+      # Persistance des fichiers uploadés par les utilisateurs
+      - ./media:/app/media
+    networks:
+      - app_default
+
+networks:
+  app_default:
+    external: true
+    name: nginx-proxy-manager_default

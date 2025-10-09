@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 class Adherent(models.Model):
@@ -6,6 +7,7 @@ class Adherent(models.Model):
     date_naissance = models.DateField()
     numero_securite_sociale = models.CharField(max_length=15, unique=True, help_text="Numéro de sécurité sociale unique")
     date_adhesion = models.DateField(auto_now_add=True) # La date est ajoutée automatiquement à la création
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f"{self.prenom} {self.nom}"

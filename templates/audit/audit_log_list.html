@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Audit Log{% endblock %}
+{% block page_title %}Historique des Actions (Audit){% endblock %}
+
+{% block content %}
+    <p>Cette page liste toutes les actions importantes enregistrées sur la plateforme.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Date et Heure</th>
+                <th>Utilisateur</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in audit_logs %}
+                <tr>
+                    <td>{{ log.date_action }}</td>
+                    <td>{{ log.utilisateur.username|default:"Système" }}</td>
+                    <td>{{ log.action }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">Aucune action n'a été enregistrée.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
