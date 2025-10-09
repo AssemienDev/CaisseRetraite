@@ -35,7 +35,7 @@ jobs:
               git clone git@github.com:AssemienDev/caisse_retrait_deploy.git caisse_retrait_deploy
             fi
 
-            cd caisse_retraite_project
+            cd caisse_retrait_deploy
             git pull origin main
 
             # Créer le fichier .env proprement
