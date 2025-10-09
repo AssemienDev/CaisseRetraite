@@ -23,7 +23,6 @@ USER nonroot
 # Exposer le port de l’application
 EXPOSE 8004
 
-RUN mkdir -p /app/staticfiles && chmod 777 /app/staticfiles
 
 # Lancer le script d'entrée
 ENTRYPOINT ["/app/entrypoint.sh"]
