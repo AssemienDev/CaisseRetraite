@@ -20,37 +20,45 @@ jobs:
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
           script: |
-            # Installer Docker et Docker Compose si non installés
-            if ! command -v docker &> /dev/null; then
-              sudo apt update -y
-              sudo apt install -y docker.io
-            fi
-
-            if ! docker compose version &> /dev/null; then
-              sudo apt install -y docker-compose-plugin
-            fi
-
-            mkdir -p ~/.ssh
-            ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-        
-            # Nouvelle version
-            if [ ! -d "caisse_retrait_deploy" ]; then
-              # Cloner en utilisant HTTPS
-              git clone https://github.com/AssemienDev/caisse_retrait_deploy.git
-            fi
+             cd ~
+            
+            # **LA CORRECTION CLÉ : Supprimer complètement l'ancien dossier**
+            echo "Removing old project directory to ensure a clean slate..."
+            rm -rf caisse_retrait_deploy
+            
+            # Cloner à nouveau le dépôt pour garantir d'avoir la dernière version
+            echo "Cloning fresh repository..."
+            git clone https://github.com/AssemienDev/caisse_retrait_deploy.git
+            
+            # Se déplacer dans le nouveau dossier
             cd caisse_retrait_deploy
-            # git pull nécessite une authentification, donc on fait un reset pour être sûr d'avoir la bonne version
-            git fetch
-            git reset --hard origin/main
+            
+            # --- DEBUG : AFFICHER LE CONTENU DES FICHIERS IMPORTANTS ---
+            echo "--- Verifying content of Dockerfile on server ---"
+            cat Dockerfile
+            echo "--- Verifying permissions of entrypoint.sh on server ---"
+            ls -l entrypoint.sh
+            echo "----------------------------------------------------"
+            # -----------------------------------------------------------
+            
+            # Créer le fichier .env à partir des secrets GitHub
+            echo "Creating .env file..."
+            echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" > .env
+            echo "DEBUG=False" >> .env
+            echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}" >> .env
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
 
-            # Créer le fichier .env proprement
-            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
+            # Stopper les anciens conteneurs s'ils existent (ne produira pas d'erreur si absents)
+            docker compose down --remove-orphans
 
-            # Reconstruire et relancer les conteneurs
-            # Nouvelles lignes
-            docker compose down
+            # Reconstruire l'image sans le cache
+            echo "Building new image from scratch..."
             docker compose build --no-cache
+
+            # Démarrer les nouveaux conteneurs
+            echo "Starting new containers..."
             docker compose up -d
 
             # Nettoyer les anciennes images Docker non utilisées
+            echo "Cleaning up old images..."
             docker image prune -af
