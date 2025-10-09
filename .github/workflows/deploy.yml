@@ -19,20 +19,20 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
-          script:
-             cd ~
-            
+          script: |
+            cd ~
+
             # **LA CORRECTION CLÉ : Supprimer complètement l'ancien dossier**
             echo "Removing old project directory to ensure a clean slate..."
             rm -rf caisse_retrait_deploy
-            
+
             # Cloner à nouveau le dépôt pour garantir d'avoir la dernière version
             echo "Cloning fresh repository..."
             git clone https://github.com/AssemienDev/caisse_retrait_deploy.git
-            
+
             # Se déplacer dans le nouveau dossier
             cd caisse_retrait_deploy
-            
+
             # --- DEBUG : AFFICHER LE CONTENU DES FICHIERS IMPORTANTS ---
             echo "--- Verifying content of Dockerfile on server ---"
             cat Dockerfile
@@ -40,7 +40,7 @@ jobs:
             ls -l entrypoint.sh
             echo "----------------------------------------------------"
             # -----------------------------------------------------------
-            
+
             # Créer le fichier .env à partir des secrets GitHub
             echo "Creating .env file..."
             echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" > .env
@@ -48,7 +48,7 @@ jobs:
             echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}" >> .env
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
 
-            # Stopper les anciens conteneurs s'ils existent (ne produira pas d'erreur si absents)
+            # Stopper les anciens conteneurs s'ils existent
             docker compose down --remove-orphans
 
             # Reconstruire l'image sans le cache
