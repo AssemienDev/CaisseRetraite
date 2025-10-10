@@ -43,9 +43,6 @@ jobs:
 
             # Créer le fichier .env à partir des secrets GitHub
             echo "Creating .env file..."
-            echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" > .env
-            echo "DEBUG=False" >> .env
-            echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}" >> .env
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
 
             # Stopper les anciens conteneurs s'ils existent
